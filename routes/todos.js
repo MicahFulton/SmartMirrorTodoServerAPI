@@ -1,12 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const db = require('diskdb').connect('db', ['todos']);
+var db = require('diskdb')
+db = db.connect('db', ['todos']);
 
 router.get('/', (req, res, next) => {
     res.send(db.todos.find());
 });
 
 router.post('/', (req, res, next) => {
+    if (Array.isArray(req.body)) {
+        db.todos.remove({});
+        db = db.connect('db', ['todos']);
+    }
     db.todos.save(req.body);
     res.sendStatus(200)
 });
